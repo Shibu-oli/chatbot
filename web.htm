@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Support Chatbot</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Chat Container Styles */
+        #chat-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #0b8457; /* Green background */
+            color: #000; /* Black text */
+            border-radius: 10px;
+        }
+
+        /* Header Styles */
+        h2 {
+            background-color: #0b8457; /* Green background */
+            color: #fff; /* White text */
+            text-align: center;
+            margin: 0;
+            padding: 15px;
+            font-size: 24px;
+        }
+
+        /* Chat Output Styles */
+        #chat-output {
+            height: 300px;
+            overflow-y: scroll;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* User Input Styles */
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-top: 1px solid #ccc;
+            font-size: 16px;
+            background-color: #f9f9f9;
+        }
+
+        /* Quick Message Styles */
+        .quick-message {
+            cursor: pointer;
+            padding: 5px;
+            margin: 5px;
+            background-color: #0b8457; /* Green background */
+            color: #fff; /* White text */
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .quick-message:hover {
+            background-color: #000; /* Black background on hover */
+        }
+
+        /* Chatbot Response Styles */
+        .chatbot-response {
+            background-color: #0b8457; /* Green background */
+            color: #fff; /* White text */
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h2>Mental Health Support Chatbot</h2>
+        <div id="chat-output">
+            <p class="chatbot-response">Chatbot: Hello! How can I help you today?</p>
+        </div>
+        <input type="text" id="user-input" placeholder="Type your message here...">
+        <div id="quick-messages">
+            <div class="quick-message">How can I manage panic attacks?</div>
+            <div class="quick-message">Give me tips for improving my mood</div>
+            <div class="quick-message">What should I do when I feel overwhelmed?</div>
+            <!-- Add more quick responses here -->
+        </div>
+    </div>
+
+    <script>
+        const chatOutput = document.getElementById('chat-output');
+        const userInput = document.getElementById('user-input');
+        const quickMessages = document.querySelectorAll('.quick-message');
+
+        // Define responses for common issues
+        const commonResponses = {
+            "anxious": "It's common to feel anxious at times. Try some relaxation techniques like deep breathing or meditation to help calm your mind. Additionally, consider reaching out to a therapist for support. Here's a resource to find a therapist near you: <a href='https://www.psychologytoday.com/us/therapists' target='_blank'>Find a Therapist</a>.",
+            "depress": "I'm really sorry to hear that you're feeling this way. It's essential to talk to a mental health professional or someone you trust for support. You don't have to go through this alone. Here's a crisis helpline you can call for immediate assistance: <a href='tel:1-800-273-8255'>1-800-273-8255 (National Suicide Prevention Lifeline)</a>.",
+            "i want to die": "It takes a lot of courage to come here today and say this out loud. I know it's not easy to say that you want to die - it's a very heavy thing to do. However, I also want to let you know how much I appreciate you coming to a safe space to discuss this. Your health and wellbeing is absolutely important and valuable. Can I ask how long you have been feeling this way for?",
+            "self-harm": "I'm really sorry to hear that you're feeling this way, but I can't provide the help that you need. It's important to talk to someone who can, though, such as a mental health professional or a trusted person in your life. You don't have to go through this alone.",
+            "lonely": "I'm here for you, and I'm glad you reached out. Loneliness can be tough to deal with, but remember that you can connect with friends, family, or even support groups to help combat that feeling. You're not alone in this.",
+            "thank you": "You're welcome! Remember, I'm here whenever you need someone to talk to. Your mental health is important, and I'm here to support you.",
+            "I'm feeling anxious": "It's common to feel anxious at times. Try some relaxation techniques like deep breathing or meditation to help calm your mind. Additionally, consider reaching out to a therapist for support. Here's a resource to find a therapist near you: <a href='https://www.psychologytoday.com/us/therapists' target='_blank'>Find a Therapist</a>.",
+            "I'm so stressed out right now": "I'm sorry to hear that you're feeling stressed. Stress can take a toll on your mental health. Try relaxation techniques like deep breathing, mindfulness, or going for a walk. Don't hesitate to reach out to a mental health professional for guidance.",
+            "I'm sad and don't know what to do": "I'm here to listen if you'd like to talk about what's making you feel sad. It's important to express your emotions. Consider reaching out to a friend or family member for support as well. You don't have to go through this alone.",
+            "I want to die": "It takes a lot of courage to come here today and say this out loud. I know it's not easy to say that you want to die - it's a very heavy thing to do. However, I also want to let you know how much I appreciate you coming to a safe space to discuss this. Your health and wellbeing is absolutely important and valuable. Can I ask how long you have been feeling this way for?",
+            "I'm having thoughts of self-harm": "I'm really sorry to hear that you're feeling this way, but I can't provide the help that you need. It's crucial to talk to someone who can, such as a mental health professional or a trusted person in your life. Your well-being is important.",
+            "I need help right now": "I'm here for you, and I want to help. If you're in immediate danger or need urgent support, please reach out to a crisis helpline or a trusted person in your life. You don't have to face this alone.",
+            "How can I manage panic attacks?": "Managing panic attacks involves a combination of techniques. Try deep breathing exercises, grounding techniques, and mindfulness meditation. Consider seeking help from a therapist who specializes in anxiety disorders for personalized strategies.",
+            "Give me tips for improving my mood": "To improve your mood, engage in activities you enjoy, practice gratitude, maintain a healthy lifestyle with regular exercise and a balanced diet, and connect with friends and loved ones. If mood issues persist, consulting a mental health professional is a good idea.",
+            "What should I do when I feel overwhelmed?": "When you feel overwhelmed, it's essential to take a step back and prioritize self-care. Try relaxation exercises, break tasks into smaller steps, and consider talking to a therapist for coping strategies tailored to your needs."
+        };
+
+        function addMessageToChat(message, isUser) {
+            const chatMessage = document.createElement('p');
+            chatMessage.className = isUser ? 'chatbot-response' : 'chatbot-response';
+            chatMessage.innerHTML = isUser ? `You: ${message}` : `Chatbot: ${message}`;
+            chatOutput.appendChild(chatMessage);
+        }
+
+        function handleUserInput(userMessage) {
+            // Display user message in chat
+            addMessageToChat(userMessage, true);
+
+            // Check for common issues and provide appropriate responses
+            for (const keyword in commonResponses) {
+                if (userMessage.includes(keyword)) {
+                    const matchedResponse = commonResponses[keyword];
+                    addMessageToChat(matchedResponse, false);
+                    return; // Stop checking once a match is found
+                }
+            }
+
+            // Simulate a regular chatbot response (replace with actual logic)
+            setTimeout(function () {
+                const botResponse = getRandomResponse();
+                addMessageToChat(botResponse, false);
+            }, 500);
+        }
+
+        // Event listener for user input
+        userInput.addEventListener('keyup', function (event) {
+            if (event.key === 'Enter') {
+                const userMessage = userInput.value.trim().toLowerCase();
+                if (userMessage) {
+                    handleUserInput(userMessage);
+                    userInput.value = '';
+                }
+            }
+        });
+
+        // Event listener for quick messages
+        quickMessages.forEach((quickMessage) => {
+            quickMessage.addEventListener('click', function () {
+                const messageText = quickMessage.textContent;
+                handleUserInput(messageText);
+            });
+        });
+    </script>
+</body>
+</html>
