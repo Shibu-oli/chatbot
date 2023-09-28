@@ -23,7 +23,7 @@
             margin: 0 auto;
             padding: 20px;
             background-color: #0b8457; /* Green background */
-            color: #000; /* Black text */
+            color: #fff; /* White text */
             border-radius: 10px;
         }
 
@@ -126,6 +126,11 @@
             chatMessage.className = isUser ? 'chatbot-response' : 'chatbot-response';
             chatMessage.innerHTML = isUser ? `You: ${message}` : `Chatbot: ${message}`;
             chatOutput.appendChild(chatMessage);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatOutput.scrollTop = chatOutput.scrollHeight;
         }
 
         function handleUserInput(userMessage) {
@@ -143,7 +148,7 @@
 
             // Simulate a regular chatbot response (replace with actual logic)
             setTimeout(function () {
-                const botResponse = getRandomResponse();
+                const botResponse = "I'm here to help. Please feel free to ask any questions.";
                 addMessageToChat(botResponse, false);
             }, 500);
         }
